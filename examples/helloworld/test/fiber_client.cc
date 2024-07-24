@@ -27,10 +27,14 @@
 DEFINE_string(client_config, "trpc_cpp.yaml", "framework client_config file, --client_config=trpc_cpp.yaml");
 DEFINE_string(service_name, "trpc.test.helloworld.Greeter", "callee service name");
 
-int DoRpcCall(const std::shared_ptr<::trpc::test::helloworld::GreeterServiceProxy>& proxy,int idx) {
+int DoRpcCall(const std::shared_ptr<::trpc::test::helloworld::GreeterServiceProxy>& proxy,bool add_header) {
   ::trpc::ClientContextPtr client_ctx = ::trpc::MakeClientContext(proxy);
+    if (add_header) {
+    client_ctx->AddReqTransInfo("X-Special-Header", "HeaderValue");
+  }
   ::trpc::test::helloworld::HelloRequest req;
-  req.set_msg("fiber, idx="+std::to_string(idx));
+  req.set_msg("fiber");
+  // req.set_msg("fiber, idx="+std::to_string(idx));
   ::trpc::test::helloworld::HelloReply rsp;
   ::trpc::Status status = proxy->SayHello(client_ctx, req, &rsp);
   if (!status.OK()) {
@@ -42,17 +46,22 @@ int DoRpcCall(const std::shared_ptr<::trpc::test::helloworld::GreeterServiceProx
 }
 
 int Run() {
-  // auto proxy = ::trpc::GetTrpcClient()->GetProxy<::trpc::test::helloworld::GreeterServiceProxy>(FLAGS_service_name);
+ auto proxy = ::trpc::GetTrpcClient()->GetProxy<::trpc::test::helloworld::GreeterServiceProxy>(FLAGS_service_name);
 
-  // return DoRpcCall(proxy);
+  std::cout << "Sending request with header:" << std::endl;
+  int result_with_header = DoRpcCall(proxy, true);
+  
+  std::cout << "Sending request without header:" << std::endl;
+  int result_without_header = DoRpcCall(proxy, false);
 
-  for (int i = 1; i <= 20; i++) {
-    auto proxy = ::trpc::GetTrpcClient()->GetProxy<::trpc::test::helloworld::GreeterServiceProxy>(FLAGS_service_name);
-    DoRpcCall(proxy, i);
+  return result_with_header + result_without_header;
+  // for (int i = 1; i <= 20; i++) {
+  //   auto proxy = ::trpc::GetTrpcClient()->GetProxy<::trpc::test::helloworld::GreeterServiceProxy>(FLAGS_service_name);
+  //   DoRpcCall(proxy, i);
      
-    }
-    return 0;
-  }
+  //   }
+  //   return 0;
+}
 
 
 

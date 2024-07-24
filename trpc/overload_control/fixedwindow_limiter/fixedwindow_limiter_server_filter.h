@@ -27,7 +27,7 @@ namespace trpc::overload_control {
 class FixedTimeWindowServerFilter : public MessageServerFilter {
  public:
   /// @brief Name of filter
-  std::string Name() override { return kFixedTimeWindowLimiterName; }
+  std::string Name() override { return "fixedwindow_limiter"; }
 
   /// @brief Initialization function.
   int Init() override;

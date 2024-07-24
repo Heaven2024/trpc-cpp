@@ -15,6 +15,7 @@ cc_binary(
         "@com_github_fmtlib_fmt//:fmtlib",
         "@trpc_cpp//trpc/common:trpc_app",
         "@trpc_cpp//trpc/overload_control/fixedwindow_limiter:fixedwindow_limiter_server_filter",
+        "@trpc_cpp//examples/helloworld/validator:validator_server_filter",
     ],
 )
 

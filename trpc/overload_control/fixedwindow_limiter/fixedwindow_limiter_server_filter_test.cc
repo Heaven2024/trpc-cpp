@@ -51,15 +51,17 @@ class FixedTimeWindowServerTestFixture : public ::testing::Test {
 };
 
 TEST_F(FixedTimeWindowServerTestFixture, Init) {
-  MessageServerFilterPtr filter = FilterManager::GetInstance()->GetMessageServerFilter("fixedwindow_limiter");
+  MessageServerFilterPtr filter = FilterManager::GetInstance()->GetMessageServerFilter(kFixedTimeWindowLimiterName);
   ASSERT_NE(filter, nullptr);
   std::vector<FilterPoint> points = filter->GetFilterPoint();
+  std::string s=filter->Name();
   ASSERT_EQ(points.size(), 2);
+  ASSERT_EQ(s, "fixedwindow_limiter");
 }
 
 // Test to ensure that the number of requests does not exceed the limit, to guarantee that flow control does not occur.
 TEST_F(FixedTimeWindowServerTestFixture, Ok) {
-  MessageServerFilterPtr filter = FilterManager::GetInstance()->GetMessageServerFilter("fixedwindow_limiter");
+  MessageServerFilterPtr filter = FilterManager::GetInstance()->GetMessageServerFilter(kFixedTimeWindowLimiterName);
   FixedTimeWindowServerFilter* time_filter = static_cast<FixedTimeWindowServerFilter*>(filter.get());
   ServerContextPtr context = MakeServerContext();
   FilterStatus status = FilterStatus::CONTINUE;

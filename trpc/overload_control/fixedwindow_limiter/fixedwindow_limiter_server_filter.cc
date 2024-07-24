@@ -31,7 +31,7 @@ int FixedTimeWindowServerFilter::Init() {
   if (!ok) {
     TRPC_FMT_DEBUG("FixedTimeWindowServerFilter read config failed, will use a default config");
   }
-
+  fixedwindow_conf_.Display();
   controller_ = std::make_shared<FixedTimeWindowOverloadController>(fixedwindow_conf_.limit, std::chrono::seconds(fixedwindow_conf_.window_size));
   controller_->Init();
 

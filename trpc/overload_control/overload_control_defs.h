@@ -84,7 +84,7 @@ constexpr char kTransinfoKeyTrpcPriority[] = "trpc-priority";
 constexpr char kFixedTimeWindowLimiterName[] = "fixedwindow_limiter";
 
 /// @brief Name of monitoring dimensions for request-based concurrent overload protection rate limiter.
-constexpr char kOverloadctrlFixedTimeWindowLimiterName[] = "overloadctrl_fixwindow_limiter";
+constexpr char kOverloadctrlFixedTimeWindowLimiterName[] = "overloadctrl_fixedwindow_limiter";
 
 }  // namespace trpc::overload_control
 
