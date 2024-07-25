@@ -4,7 +4,13 @@ package trpc.test.helloworld;
 
 service Greeter {
   rpc SayHello (HelloRequest) returns (HelloReply) {}
+
 }
+
+service SecondGreeter {
+   // Sends a second greeting
+   rpc SayHelloAgain (HelloRequest) returns (HelloReply){}
+ }
 
 message HelloRequest {
    string msg = 1;
