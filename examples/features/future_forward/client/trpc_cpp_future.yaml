@@ -3,5 +3,5 @@ global:
     default:
       - instance_name: default_instance
         io_handle_type: separate
-        io_thread_num: 1
-        handle_thread_num: 1
+        io_thread_num: 4
+        handle_thread_num: 4

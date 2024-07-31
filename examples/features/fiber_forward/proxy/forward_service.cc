@@ -29,6 +29,9 @@ namespace examples::forward {
 ForwardServiceImpl::ForwardServiceImpl() {
   greeter_proxy_ =
       ::trpc::GetTrpcClient()->GetProxy<::trpc::test::helloworld::GreeterServiceProxy>("trpc.test.helloworld.Greeter");
+  second_greeter_proxy_ = 
+      ::trpc::GetTrpcClient()->GetProxy<::trpc::test::helloworld::SecondGreeterServiceProxy>("trpc.test.helloworld.SecondGreeter");
+
 }
 
 ::trpc::Status ForwardServiceImpl::Route(::trpc::ServerContextPtr context,
@@ -66,38 +69,54 @@ ForwardServiceImpl::ForwardServiceImpl() {
   std::vector<::trpc::test::helloworld::HelloReply> vec_final_reply;
   vec_final_reply.resize(exe_count);
 
-  int i = 0;
-  while (i < exe_count) {
-    bool ret = ::trpc::StartFiberDetached([this, &l, &context, &request, i, &vec_final_reply] {
+  // int i = 0;
+  // while (i < exe_count) {
+  //   bool ret = ::trpc::StartFiberDetached([this, &l, &context, &request, i, &vec_final_reply] {
 
-      std::string msg = request->msg();
-      msg += ", index";
-      msg += std::to_string(i);
+  //     std::string msg = request->msg();
+  //     msg += ", index";
+  //     msg += std::to_string(i);
 
-      trpc::test::helloworld::HelloRequest request;
-      request.set_msg(msg);
+  //     trpc::test::helloworld::HelloRequest request;
+  //     request.set_msg(msg);
 
-      auto client_context = ::trpc::MakeClientContext(context, greeter_proxy_);
-      ::trpc::Status status = greeter_proxy_->SayHello(client_context, request, &vec_final_reply[i]);
+  //     auto client_context = ::trpc::MakeClientContext(context, greeter_proxy_);
+  //     ::trpc::Status status = greeter_proxy_->SayHello(client_context, request, &vec_final_reply[i]);
 
-      TRPC_FMT_INFO("Forward i: {}, status:{}, route_reply:{}", i, status.ToString(), vec_final_reply[i].msg());
+  //     TRPC_FMT_INFO("Forward i: {}, status:{}, route_reply:{}", i, status.ToString(), vec_final_reply[i].msg());
 
-      // when reduced to 0, the FiberLatch `Wait` operation will be notified
-      l.CountDown();
-    });
+  //     // when reduced to 0, the FiberLatch `Wait` operation will be notified
+  //     l.CountDown();
+  //   });
 
-    if (!ret) {
-      std::string msg("failed, index:");
-      msg += std::to_string(i);
+  //   if (!ret) {
+  //     std::string msg("failed, index:");
+  //     msg += std::to_string(i);
 
-      vec_final_reply[i].set_msg("failed.");
+  //     vec_final_reply[i].set_msg("failed.");
 
-      l.CountDown();
-    }
+  //     l.CountDown();
+  //   }
   
-    i += 1;
-  }
+  //   i += 1;
+  // }
+    bool ret1 = ::trpc::StartFiberDetached([this, &l, &context, &request, &vec_final_reply] {
+    auto client_context = ::trpc::MakeClientContext(context, greeter_proxy_);
+    ::trpc::Status status = greeter_proxy_->SayHello(client_context, *request, &vec_final_reply[0]);
+    TRPC_FMT_INFO("Greeter status:{}, reply:{}", status.ToString(), vec_final_reply[0].msg());
+    l.CountDown();
+  });
 
+    bool ret2 = ::trpc::StartFiberDetached([this, &l, &context, &request, &vec_final_reply] {
+    auto client_context = ::trpc::MakeClientContext(context, second_greeter_proxy_);
+    ::trpc::Status status = second_greeter_proxy_->SayHelloAgain(client_context, *request, &vec_final_reply[1]);
+    TRPC_FMT_INFO("SecondGreeter status:{}, reply:{}", status.ToString(), vec_final_reply[1].msg());
+    l.CountDown();
+  });
+    if (!ret1 || !ret2) {
+    reply->set_msg("Failed to start fibers.");
+    // return ::trpc::kFailureStatus;
+  }
   // wait for two requests to return
   // block current fiber, not block current fiber worker thread
   l.Wait();

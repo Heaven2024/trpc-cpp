@@ -27,6 +27,14 @@ client:
       conn_type: long
       is_conn_complex: true
       selector_name: direct
+    - name: trpc.test.helloworld.SecondGreeter
+      target: 0.0.0.0:12347      
+      protocol: trpc
+      timeout: 1000
+      network: tcp
+      conn_type: long
+      is_conn_complex: true
+      selector_name: direct
 
 plugins:
   log:

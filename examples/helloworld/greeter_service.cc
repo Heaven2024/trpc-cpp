@@ -33,7 +33,7 @@ namespace helloworld {
 
   return ::trpc::kSuccStatus;
 }
-::trpc::Status GreeterServiceImpl::SayHelloAgain(::trpc::ServerContextPtr context,
+::trpc::Status SecondGreeterServiceImpl::SayHelloAgain(::trpc::ServerContextPtr context,
                                                  const ::trpc::test::helloworld::HelloRequest* request,
                                                  ::trpc::test::helloworld::HelloReply* reply) {
   // Your can access more information from rpc context, eg: remote ip and port

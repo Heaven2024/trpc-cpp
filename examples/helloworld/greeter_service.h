@@ -23,10 +23,12 @@ class GreeterServiceImpl : public ::trpc::test::helloworld::Greeter {
   ::trpc::Status SayHello(::trpc::ServerContextPtr context,
                           const ::trpc::test::helloworld::HelloRequest* request,
                           ::trpc::test::helloworld::HelloReply* reply) override;
-
+};
+class SecondGreeterServiceImpl : public ::trpc::test::helloworld::SecondGreeter {
+ public:
   ::trpc::Status SayHelloAgain(::trpc::ServerContextPtr context,
-                        const ::trpc::test::helloworld::HelloRequest* request,
-                        ::trpc::test::helloworld::HelloReply* reply) override;
+                          const ::trpc::test::helloworld::HelloRequest* request,
+                          ::trpc::test::helloworld::HelloReply* reply) override;
 };
 
 }  // namespace helloworld

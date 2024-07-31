@@ -21,7 +21,7 @@
 namespace examples::forward {
 
 using GreeterProxyPtr = std::shared_ptr<::trpc::test::helloworld::GreeterServiceProxy>;
-
+using SecondGreeterProxyPtr = std::shared_ptr<::trpc::test::helloworld::SecondGreeterServiceProxy>;
 class ForwardServiceImpl : public ::trpc::test::route::Forward {
  public:
   ForwardServiceImpl();
@@ -36,6 +36,8 @@ class ForwardServiceImpl : public ::trpc::test::route::Forward {
 
  private:
   GreeterProxyPtr greeter_proxy_;
+  SecondGreeterProxyPtr second_greeter_proxy_;
+
 };
 
 }  // namespace examples::forward

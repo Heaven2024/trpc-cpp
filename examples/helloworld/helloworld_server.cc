@@ -31,10 +31,11 @@ class HelloWorldServer : public ::trpc::TrpcApp {
     // Set the service name, which must be the same as the value of the `/server/service/name` configuration item
     // in the configuration file, otherwise the framework cannot receive requests normally.
     std::string service_name = fmt::format("{}.{}.{}.{}", "trpc", config.app, config.server, "Greeter");
+    std::string second_service_name = fmt::format("{}.{}.{}.{}", "trpc", config.app, config.server, "SecondGreeter");
     TRPC_FMT_INFO("service name:{}", service_name);
-
+    TRPC_FMT_INFO("service name:{}", second_service_name);
     RegisterService(service_name, std::make_shared<GreeterServiceImpl>());
-
+    RegisterService(second_service_name, std::make_shared<SecondGreeterServiceImpl>());
     return 0;
   }
 
