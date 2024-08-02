@@ -122,7 +122,7 @@ int Run() {
   while (k < FLAGS_count) {
     DoRoute(prx);
 
-    DoParallelRoute(prx);
+    // DoParallelRoute(prx);
 
     ++k;
   }

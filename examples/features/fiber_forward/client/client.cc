@@ -94,7 +94,7 @@ int Run() {
     bool start_fiber = ::trpc::StartFiberDetached([&] {
       uint32_t k = 0;
       while (k < FLAGS_count) {
-        DoRoute(prx);
+        // DoRoute(prx);
 
         DoParallelRoute(prx);
 

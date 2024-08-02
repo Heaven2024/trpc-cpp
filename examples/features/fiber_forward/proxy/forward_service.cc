@@ -103,14 +103,15 @@ ForwardServiceImpl::ForwardServiceImpl() {
     bool ret1 = ::trpc::StartFiberDetached([this, &l, &context, &request, &vec_final_reply] {
     auto client_context = ::trpc::MakeClientContext(context, greeter_proxy_);
     ::trpc::Status status = greeter_proxy_->SayHello(client_context, *request, &vec_final_reply[0]);
-    TRPC_FMT_INFO("Greeter status:{}, reply:{}", status.ToString(), vec_final_reply[0].msg());
+    TRPC_FMT_INFO("[Request ID:{}] [Fiber 1] Greeter status:{}, reply:{}", client_context->GetRequestId(),   status.ToString(), vec_final_reply[0].msg());
     l.CountDown();
+    
   });
 
     bool ret2 = ::trpc::StartFiberDetached([this, &l, &context, &request, &vec_final_reply] {
     auto client_context = ::trpc::MakeClientContext(context, second_greeter_proxy_);
     ::trpc::Status status = second_greeter_proxy_->SayHelloAgain(client_context, *request, &vec_final_reply[1]);
-    TRPC_FMT_INFO("SecondGreeter status:{}, reply:{}", status.ToString(), vec_final_reply[1].msg());
+    TRPC_FMT_INFO("[Request ID:{}] [Fiber 2] SecondGreeter status:{}, reply:{}", client_context->GetRequestId(),status.ToString(), vec_final_reply[1].msg());
     l.CountDown();
   });
     if (!ret1 || !ret2) {
